@@ -13,11 +13,11 @@ import {
 } from "../lib/formatters"
 
 const getClimateColor = () => {
-  return 'bg-gray-100 text-gray-700 border-gray-200'
+  return 'bg-[#F8F9FB] text[#22283A] border-[#D0D8E9]'
 }
 
 const getTerrainColor = () => {
-  return 'bg-purple-100 text-purple-700 border-purple-200'
+  return 'bg-[#F3EBFF] text-[#873AFF] border-[#FFFFFF00]'
 }
 
 export const columns: ColumnDef<Planet>[] = [
