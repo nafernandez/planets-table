@@ -32,14 +32,16 @@ export function PlanetsTable() {
   const totalPopulation = getTotalPopulation(planets)
 
   return (
-    <div className="space-y-4">
-      <DataTable 
-        columns={columns} 
-        data={planets}
-        enablePagination={false}
-      />
+    <div className="h-full flex flex-col">
+      <div className="flex-1 min-h-0">
+        <DataTable 
+          columns={columns} 
+          data={planets}
+          enablePagination={false}
+        />
+      </div>
       
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex-shrink-0 flex flex-col items-center gap-4 pt-4">
         {hasMore && (
           <Button
             onClick={loadMore}
@@ -50,11 +52,11 @@ export function PlanetsTable() {
             <span className="rotate-cw-label">Cargar más</span>
           </Button>
         )}
-      </div>
-      
-      <div className="flex items-center justify-end">
-        <div className="text-sm text-muted-foreground">
-          Población total: <span className="font-semibold">{totalPopulation}</span>
+        
+        <div className="flex items-center justify-end w-full">
+          <div className="text-sm text-muted-foreground">
+            Población total: <span className="font-semibold">{totalPopulation}</span>
+          </div>
         </div>
       </div>
     </div>
