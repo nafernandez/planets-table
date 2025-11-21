@@ -3,8 +3,6 @@ import type { Planet } from '../types'
 export function formatGravity(gravity: string): string {
   if (gravity === 'unknown' || !gravity) return 'Desconocido'
   
-  // La API devuelve valores como "1 standard", "1.1", "0.85 standard", etc.
-  // Convertimos a m/s² asumiendo que "1 standard" = 9.8 m/s²
   const match = gravity.match(/(\d+\.?\d*)/)
   if (match) {
     const value = parseFloat(match[1])
@@ -13,7 +11,6 @@ export function formatGravity(gravity: string): string {
     return `${gravityInMs2.toFixed(2)} m/s²`
   }
   
-  // Si no hay número, devolver el valor original
   return gravity
 }
 
