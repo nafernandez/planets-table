@@ -23,23 +23,13 @@ export function formatDiameter(diameter: string): string {
   return `${num.toLocaleString('es-ES')} km`
 }
 
-export function formatRotationPeriod(rotationPeriod: string): string {
-  if (rotationPeriod === 'unknown' || !rotationPeriod) return 'Desconocido'
+export function formatPeriod(period: string): string {
+  if (period === 'unknown' || !period) return 'Desconocido'
   
-  const hours = parseFloat(rotationPeriod)
-  if (isNaN(hours)) return rotationPeriod
+  const hours = parseFloat(period)
+  if (isNaN(hours)) return period
   
-  const days = Math.floor(hours / 24)
-  const remainingHours = Math.floor(hours % 24)
-  const minutes = Math.floor((hours % 1) * 60)
-  
-  if (days > 0) {
-    return `${days} d ${remainingHours} hs ${minutes} min`
-  } else if (remainingHours > 0) {
-    return `${remainingHours} hs ${minutes} min`
-  } else {
-    return `${minutes} min`
-  }
+  return `${hours} hs`
 }
 
 export function formatPopulation(population: string): string {

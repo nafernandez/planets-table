@@ -7,7 +7,7 @@ import type { Planet } from "../types"
 import {
   formatGravity,
   formatDiameter,
-  formatRotationPeriod,
+  formatPeriod,
   formatPopulation,
   formatSurfaceWater,
 } from "../lib/formatters"
@@ -113,7 +113,15 @@ export const columns: ColumnDef<Planet>[] = [
     header: "Período de rotación",
     cell: ({ row }) => {
       const rotationPeriod = row.original.rotation_period
-      return formatRotationPeriod(rotationPeriod)
+      return formatPeriod(rotationPeriod)
+    },
+  },
+  {
+    accessorKey: "orbital_period",
+    header: "Período de órbita",
+    cell: ({ row }) => {
+      const orbitalPeriod = row.original.orbital_period
+      return formatPeriod(orbitalPeriod)
     },
   },
   {
@@ -138,6 +146,22 @@ export const columns: ColumnDef<Planet>[] = [
     cell: ({ row }) => {
       const population = row.original.population
       return formatPopulation(population)
+    },
+  },
+  {
+    accessorKey: "residents",
+    header: "Residentes",
+    cell: ({ row }) => {
+      const residents = row.original.residents
+      return residents.length
+    },
+  },
+  {
+    accessorKey: "films",
+    header: "Películas",
+    cell: ({ row }) => {
+      const films = row.original.films
+      return films.length
     },
   },
 ]
