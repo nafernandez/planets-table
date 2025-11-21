@@ -521,3 +521,10 @@
   font-weight: 400;
   color: #697086;
 }
+
+.text-heads {
+  font-family: 'Los Andes Lota Grotesque Alt 1', sans-serif;
+  font-weight: 300;
+  color: #697086;
+  font-size: 12px;
+}
