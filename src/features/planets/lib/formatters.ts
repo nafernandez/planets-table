@@ -29,7 +29,16 @@ export function formatPeriod(period: string): string {
   const hours = parseFloat(period)
   if (isNaN(hours)) return period
   
-  return `${hours} hs`
+  const days = Math.floor(hours / 24)
+  const remainingHours = Math.floor(hours % 24)
+  
+  if (days === 0) {
+    return `${remainingHours} hs`
+  } else if (remainingHours === 0) {
+    return `${days} d`
+  } else {
+    return `${days} d ${remainingHours} hs`
+  }
 }
 
 export function formatPopulation(population: string): string {
