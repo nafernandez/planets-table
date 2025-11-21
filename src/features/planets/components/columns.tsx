@@ -77,14 +77,38 @@ export const columns: ColumnDef<Planet>[] = [
     header: "Terreno",
     cell: ({ row }) => {
       const terrain = row.getValue("terrain") as string
-      const displayTerrain = terrain === 'unknown' || !terrain
-        ? 'Desconocido'
-        : terrain.split(',').map(t => t.trim())[0]
+      const isUnknown = terrain === 'unknown' || !terrain
+      
+      const terrains = isUnknown 
+        ? ['Desconocido']
+        : terrain.split(',').map(t => t.trim()).filter(t => t)
+      
+      const displayTerrain = terrains[0]
+      const extraCount = terrains.length - 1
+      const remainingTerrains = terrains.slice(1)
       
       return (
-        <Badge variant="outline" className={getTerrainColor()}>
-          {displayTerrain}
-        </Badge>
+        <div className="flex items-center gap-1">
+          <Badge variant="outline" className={getTerrainColor()}>
+            {displayTerrain}
+          </Badge>
+          {extraCount > 0 && (
+            <div className="relative group">
+              <Badge variant="outline" className={getTerrainColor()}>
+                +{extraCount}
+              </Badge>
+              <div className="absolute left-0 -top-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
+                <div className="bg-white border border-purple-200 rounded-md shadow-lg p-2 flex flex-wrap gap-1 min-w-max max-w-xs">
+                  {remainingTerrains.map((t, index) => (
+                    <Badge key={index} variant="outline" className={getTerrainColor()}>
+                      {t}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       )
     },
     filterFn: (row, id, value) => {
