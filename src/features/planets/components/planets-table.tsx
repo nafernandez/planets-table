@@ -58,7 +58,7 @@ export function PlanetsTable() {
       </div>
       
       {!loading && (
-        <div className="flex-shrink-0 flex items-center justify-end w-full pb-4 pr-4">
+        <div className="flex-shrink-0 flex items-center justify-end w-full py-4 pr-4 shadow-[0_-4px_16px_0px_rgba(34,40,58,0.15)]">
           <div className="text-sm text-muted-foreground">
           POBLACIÓN ACTUAL DE LOS PLANETAS: <span className="font-semibold">{totalPopulation}</span>
           </div>
