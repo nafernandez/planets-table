@@ -175,7 +175,7 @@ export const columns: ColumnDef<Planet>[] = [
           {formatted === 'No' ? (
             <Badge variant="destructive">{formatted}</Badge>
           ) : (
-            <Badge variant="outline" className="bg-gray-100 text-gray-700 border-gray-200">
+            <Badge variant="outline" className="bg-[#F8F9FB] text-gray-700 border-gray-200">
               {formatted}
             </Badge>
           )}
