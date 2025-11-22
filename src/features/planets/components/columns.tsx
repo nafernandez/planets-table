@@ -83,7 +83,7 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "terrain",
-    size: 110,
+    size: 160,
     header: () => <div className="text-left">Terreno</div>,
     cell: ({ row }) => {
       const terrain = row.getValue("terrain") as string
