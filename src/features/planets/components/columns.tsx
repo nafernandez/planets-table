@@ -28,35 +28,39 @@ export const columns: ColumnDef<Planet>[] = [
       const isSomeSelected = table.getIsSomePageRowsSelected()
       
       return (
-        <Checkbox
-          checked={isAllSelected ? true : isSomeSelected ? "indeterminate" : false}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Seleccionar todo"
-          className="data-[state=checked]:bg-gray-100 data-[state=checked]:border-gray-200 data-[state=checked]:text-gray-700 data-[state=indeterminate]:bg-gray-100 data-[state=indeterminate]:border-gray-200 data-[state=indeterminate]:text-gray-700"
-        />
+        <div className="pl-4">
+          <Checkbox
+            checked={isAllSelected ? true : isSomeSelected ? "indeterminate" : false}
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Seleccionar todo"
+            className="data-[state=checked]:bg-gray-100 data-[state=checked]:border-gray-200 data-[state=checked]:text-gray-700 data-[state=indeterminate]:bg-gray-100 data-[state=indeterminate]:border-gray-200 data-[state=indeterminate]:text-gray-700"
+          />
+        </div>
       )
     },
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Seleccionar fila"
-        className="data-[state=checked]:bg-gray-100 data-[state=checked]:border-gray-200 data-[state=checked]:text-gray-700"
-      />
+      <div className="pl-4">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Seleccionar fila"
+          className="data-[state=checked]:bg-gray-100 data-[state=checked]:border-gray-200 data-[state=checked]:text-gray-700"
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
   },
   {
     accessorKey: "name",
-    header: "Nombre",
+    header: () => <div className="text-left">Nombre</div>,
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("name")}</div>
+      <div className="font-medium text-left">{row.getValue("name")}</div>
     ),
   },
   {
     accessorKey: "climate",
-    header: "Clima",
+    header: () => <div className="text-left">Clima</div>,
     cell: ({ row }) => {
       const climate = row.getValue("climate") as string
       const displayClimate = climate === 'unknown' || !climate
@@ -64,9 +68,11 @@ export const columns: ColumnDef<Planet>[] = [
         : climate.split(',').map(c => c.trim())[0]
       
       return (
-        <Badge variant="outline" className={getClimateColor()}>
-          {displayClimate}
-        </Badge>
+        <div className="text-left">
+          <Badge variant="outline" className={getClimateColor()}>
+            {displayClimate}
+          </Badge>
+        </div>
       )
     },
     filterFn: (row, id, value) => {
@@ -76,7 +82,7 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "terrain",
-    header: "Terreno",
+    header: () => <div className="text-left">Terreno</div>,
     cell: ({ row }) => {
       const terrain = row.getValue("terrain") as string
       const isUnknown = terrain === 'unknown' || !terrain
@@ -90,7 +96,7 @@ export const columns: ColumnDef<Planet>[] = [
       const remainingTerrains = terrains.slice(1)
       
       return (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 text-left">
           <Badge variant="outline" className={getTerrainColor()}>
             {displayTerrain}
           </Badge>
@@ -120,74 +126,78 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "gravity",
-    header: "Gravedad",
+    header: () => <div className="text-right">Gravedad</div>,
     cell: ({ row }) => {
       const gravity = row.original.gravity
-      return formatGravity(gravity)
+      return <div className="text-right">{formatGravity(gravity)}</div>
     },
   },
   {
     accessorKey: "diameter",
-    header: "Diámetro (km)",
+    header: () => <div className="text-right">Diámetro (km)</div>,
     cell: ({ row }) => {
       const diameter = row.original.diameter
-      return formatDiameter(diameter)
+      return <div className="text-right">{formatDiameter(diameter)}</div>
     },
   },
   {
     accessorKey: "rotation_period",
-    header: "Período de rotación",
+    header: () => <div className="text-right">Período de rotación</div>,
     cell: ({ row }) => {
       const rotationPeriod = row.original.rotation_period
-      return formatPeriod(rotationPeriod)
+      return <div className="text-right">{formatPeriod(rotationPeriod)}</div>
     },
   },
   {
     accessorKey: "orbital_period",
-    header: "Período de órbita",
+    header: () => <div className="text-right">Período de órbita</div>,
     cell: ({ row }) => {
       const orbitalPeriod = row.original.orbital_period
-      return formatPeriod(orbitalPeriod)
+      return <div className="text-right">{formatPeriod(orbitalPeriod)}</div>
     },
   },
   {
     accessorKey: "surface_water",
-    header: "Agua superficial",
+    header: () => <div className="text-left">Agua superficial</div>,
     cell: ({ row }) => {
       const surfaceWater = row.original.surface_water
       const formatted = formatSurfaceWater(surfaceWater)
       
-      return formatted === 'No' ? (
-        <Badge variant="destructive">{formatted}</Badge>
-      ) : (
-        <Badge variant="outline" className="bg-gray-100 text-gray-700 border-gray-200">
-          {formatted}
-        </Badge>
+      return (
+        <div className="text-left">
+          {formatted === 'No' ? (
+            <Badge variant="destructive">{formatted}</Badge>
+          ) : (
+            <Badge variant="outline" className="bg-gray-100 text-gray-700 border-gray-200">
+              {formatted}
+            </Badge>
+          )}
+        </div>
       )
     },
   },
   {
     accessorKey: "population",
-    header: "Población",
+    header: () => <div className="text-right">Población</div>,
     cell: ({ row }) => {
       const population = row.original.population
-      return formatPopulation(population)
+      return <div className="text-right">{formatPopulation(population)}</div>
     },
   },
   {
     accessorKey: "residents",
-    header: "Residentes",
+    header: () => <div className="text-right">Residentes</div>,
     cell: ({ row }) => {
       const residents = row.original.residents
-      return residents.length
+      return <div className="text-right">{residents.length}</div>
     },
   },
   {
     accessorKey: "films",
-    header: "Películas",
+    header: () => <div className="text-right">Películas</div>,
     cell: ({ row }) => {
       const films = row.original.films
-      return films.length
+      return <div className="text-right">{films.length}</div>
     },
   },
 ]
