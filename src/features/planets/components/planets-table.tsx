@@ -6,9 +6,44 @@ import { RotateCw } from 'lucide-react'
 import { columns } from './columns'
 import { usePlanets } from '../hooks/use-planets'
 import { getTotalPopulation } from '../lib/formatters'
+import { useState, useEffect, useRef } from 'react'
 
 export function PlanetsTable() {
   const { planets, loading, loadingMore, error, hasMore, loadMore } = usePlanets()
+  const [showLoadMoreButton, setShowLoadMoreButton] = useState(true)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current
+    
+    if (!scrollContainer) return
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = scrollContainer
+      const isNearBottom = scrollHeight - scrollTop - clientHeight < 100
+      
+      if (isNearBottom && hasMore && !showLoadMoreButton) {
+        setShowLoadMoreButton(true)
+      }
+    }
+
+    scrollContainer.addEventListener('scroll', handleScroll)
+    return () => scrollContainer.removeEventListener('scroll', handleScroll)
+  }, [hasMore, showLoadMoreButton])
+
+  useEffect(() => {
+    if (!loadingMore && scrollContainerRef.current) {
+      const scrollContainer = scrollContainerRef.current
+      requestAnimationFrame(() => {
+        const { scrollTop, scrollHeight, clientHeight } = scrollContainer
+        const isNearBottom = scrollHeight - scrollTop - clientHeight < 100
+        
+        if (isNearBottom && hasMore && !showLoadMoreButton) {
+          setShowLoadMoreButton(true)
+        }
+      })
+    }
+  }, [loadingMore, hasMore, showLoadMoreButton])
 
   if (error) {
     return (
@@ -31,6 +66,11 @@ export function PlanetsTable() {
 
   const totalPopulation = getTotalPopulation(planets)
 
+  const handleLoadMore = () => {
+    setShowLoadMoreButton(false)
+    loadMore()
+  }
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex-1 min-h-0">
@@ -38,25 +78,29 @@ export function PlanetsTable() {
           columns={columns} 
           data={planets}
           enablePagination={false}
+          onScrollContainerRef={(ref) => {
+            scrollContainerRef.current = ref
+          }}
+          renderFooter={() => (
+            <>
+              {hasMore && showLoadMoreButton && (
+                <Button
+                  onClick={handleLoadMore}
+                  disabled={loadingMore}
+                  className="h-9 gap-2 bg-white border border-[#D0D8E9] hover:bg-gray-50 rounded-full px-4 py-2 shadow-[0_1px_2px_0_rgba(34,40,58,0.05)]"
+                >
+                  <RotateCw  className={`h-4 w-4 text-black ${loadingMore ? 'animate-spin' : ''}`} />
+                  <span className="rotate-cw-label">Cargar más</span>
+                </Button>
+              )}
+            </>
+          )}
         />
       </div>
       
-      <div className="flex-shrink-0 flex flex-col items-center gap-4 pt-4">
-        {hasMore && (
-          <Button
-            onClick={loadMore}
-            disabled={loadingMore}
-            className="h-9 gap-2 bg-white border border-[#D0D8E9] hover:bg-gray-50 rounded-full px-4 py-2 shadow-[0_1px_2px_0_rgba(34,40,58,0.05)]"
-          >
-            <RotateCw  className={`h-4 w-4 text-black ${loadingMore ? 'animate-spin' : ''}`} />
-            <span className="rotate-cw-label">Cargar más</span>
-          </Button>
-        )}
-        
-        <div className="flex items-center justify-end w-full">
-          <div className="text-sm text-muted-foreground">
-            Población total: <span className="font-semibold">{totalPopulation}</span>
-          </div>
+      <div className="flex-shrink-0 flex items-center justify-end w-full pb-4 pr-4">
+        <div className="text-sm text-muted-foreground">
+        POBLACIÓN ACTUAL DE LOS PLANETAS: <span className="font-semibold">{totalPopulation}</span>
         </div>
       </div>
     </div>

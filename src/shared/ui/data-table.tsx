@@ -28,6 +28,8 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   enablePagination?: boolean
   pageSize?: number
+  renderFooter?: () => React.ReactNode
+  onScrollContainerRef?: (ref: HTMLDivElement | null) => void
 }
 
 export function DataTable<TData, TValue>({
@@ -35,10 +37,19 @@ export function DataTable<TData, TValue>({
   data,
   enablePagination = true,
   pageSize = 10,
+  renderFooter,
+  onScrollContainerRef,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    if (onScrollContainerRef) {
+      onScrollContainerRef(scrollContainerRef.current)
+    }
+  }, [onScrollContainerRef])
 
   const table = useReactTable({
     data,
@@ -63,7 +74,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-1 overflow-auto">
+      <div ref={scrollContainerRef} className="flex-1 overflow-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -112,6 +123,11 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
+        {renderFooter && (
+          <div className="flex-shrink-0 flex flex-col items-center gap-4 pt-4 pb-4">
+            {renderFooter()}
+          </div>
+        )}
       </div>
     </div>
   )
