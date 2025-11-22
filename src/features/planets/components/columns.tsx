@@ -23,6 +23,7 @@ const getTerrainColor = () => {
 export const columns: ColumnDef<Planet>[] = [
   {
     id: "select",
+    size: 50,
     header: ({ table }) => {
       const isAllSelected = table.getIsAllPageRowsSelected()
       const isSomeSelected = table.getIsSomePageRowsSelected()
@@ -55,7 +56,7 @@ export const columns: ColumnDef<Planet>[] = [
     accessorKey: "name",
     header: () => <div className="text-left ">Nombre</div>,
     cell: ({ row }) => (
-      <div className="font-medium text-left">{row.getValue("name")}</div>
+      <div className="text-left text-[#22283A]">{row.getValue("name")}</div>
     ),
   },
   {
@@ -82,6 +83,7 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "terrain",
+    size: 110,
     header: () => <div className="text-left">Terreno</div>,
     cell: ({ row }) => {
       const terrain = row.getValue("terrain") as string
@@ -126,38 +128,43 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "gravity",
+    meta: { rightAlign: true },
     header: () => <div className="text-right">Gravedad</div>,
     cell: ({ row }) => {
       const gravity = row.original.gravity
-      return <div className="text-right">{formatGravity(gravity)}</div>
+      return <div className="text-right text-[#697086]">{formatGravity(gravity)}</div>
     },
   },
   {
     accessorKey: "diameter",
+    meta: { rightAlign: true },
     header: () => <div className="text-right">Diámetro (km)</div>,
     cell: ({ row }) => {
       const diameter = row.original.diameter
-      return <div className="text-right">{formatDiameter(diameter)}</div>
+      return <div className="text-right text-[#697086]">{formatDiameter(diameter)}</div>
     },
   },
   {
     accessorKey: "rotation_period",
+    meta: { rightAlign: true },
     header: () => <div className="text-right">Período de rotación</div>,
     cell: ({ row }) => {
       const rotationPeriod = row.original.rotation_period
-      return <div className="text-right">{formatPeriod(rotationPeriod)}</div>
+      return <div className="text-right text-[#697086]">{formatPeriod(rotationPeriod)}</div>
     },
   },
   {
     accessorKey: "orbital_period",
+    meta: { rightAlign: true },
     header: () => <div className="text-right">Período de órbita</div>,
     cell: ({ row }) => {
       const orbitalPeriod = row.original.orbital_period
-      return <div className="text-right">{formatPeriod(orbitalPeriod)}</div>
+      return <div className="text-right text-[#697086]">{formatPeriod(orbitalPeriod)}</div>
     },
   },
   {
     accessorKey: "surface_water",
+    size: 110,
     header: () => <div className="text-left">Agua superficial</div>,
     cell: ({ row }) => {
       const surfaceWater = row.original.surface_water
@@ -178,26 +185,29 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "population",
+    meta: { rightAlign: true },
     header: () => <div className="text-right">Población</div>,
     cell: ({ row }) => {
       const population = row.original.population
-      return <div className="text-right">{formatPopulation(population)}</div>
+      return <div className="text-right text-[#697086]">{formatPopulation(population)}</div>
     },
   },
   {
     accessorKey: "residents",
+    meta: { rightAlign: true },
     header: () => <div className="text-right">Residentes</div>,
     cell: ({ row }) => {
       const residents = row.original.residents
-      return <div className="text-right">{residents.length}</div>
+      return <div className="text-right text-[#697086]">{residents.length}</div>
     },
   },
   {
     accessorKey: "films",
+    meta: { rightAlign: true },
     header: () => <div className="text-right">Películas</div>,
     cell: ({ row }) => {
       const films = row.original.films
-      return <div className="text-right">{films.length}</div>
+      return <div className="text-right text-[#697086]">{films.length}</div>
     },
   },
 ]

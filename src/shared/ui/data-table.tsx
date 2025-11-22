@@ -60,6 +60,8 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    enableColumnResizing: false,
+    columnResizeMode: 'onChange',
     initialState: {
       pagination: {
         pageSize,
@@ -80,8 +82,14 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-white">
                 {headerGroup.headers.map((header) => {
+                  const isRightAligned = (header.column.columnDef.meta as { rightAlign?: boolean })?.rightAlign
+                  const columnSize = header.column.getSize()
                   return (
-                    <TableHead key={header.id} className="bg-white">
+                    <TableHead 
+                      key={header.id} 
+                      className={isRightAligned ? "bg-white !pr-2" : "bg-white"}
+                      style={columnSize ? { width: `${columnSize}px`, maxWidth: `${columnSize}px` } : undefined}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -101,14 +109,22 @@ export function DataTable<TData, TValue>({
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    const isRightAligned = (cell.column.columnDef.meta as { rightAlign?: boolean })?.rightAlign
+                    const columnSize = cell.column.getSize()
+                    return (
+                      <TableCell 
+                        key={cell.id} 
+                        className={isRightAligned ? "!pr-2" : ""}
+                        style={columnSize ? { width: `${columnSize}px`, maxWidth: `${columnSize}px` } : undefined}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    )
+                  })}
                 </TableRow>
               ))
             ) : (
