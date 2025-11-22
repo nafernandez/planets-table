@@ -6,44 +6,11 @@ import { RotateCw } from 'lucide-react'
 import { columns } from './columns'
 import { usePlanets } from '../hooks/use-planets'
 import { getTotalPopulation } from '../lib/formatters'
-import { useState, useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
 export function PlanetsTable() {
   const { planets, loading, loadingMore, error, hasMore, loadMore } = usePlanets()
-  const [showLoadMoreButton, setShowLoadMoreButton] = useState(true)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const scrollContainer = scrollContainerRef.current
-    
-    if (!scrollContainer) return
-
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = scrollContainer
-      const isNearBottom = scrollHeight - scrollTop - clientHeight < 100
-      
-      if (isNearBottom && hasMore && !showLoadMoreButton) {
-        setShowLoadMoreButton(true)
-      }
-    }
-
-    scrollContainer.addEventListener('scroll', handleScroll)
-    return () => scrollContainer.removeEventListener('scroll', handleScroll)
-  }, [hasMore, showLoadMoreButton])
-
-  useEffect(() => {
-    if (!loadingMore && scrollContainerRef.current) {
-      const scrollContainer = scrollContainerRef.current
-      requestAnimationFrame(() => {
-        const { scrollTop, scrollHeight, clientHeight } = scrollContainer
-        const isNearBottom = scrollHeight - scrollTop - clientHeight < 100
-        
-        if (isNearBottom && hasMore && !showLoadMoreButton) {
-          setShowLoadMoreButton(true)
-        }
-      })
-    }
-  }, [loadingMore, hasMore, showLoadMoreButton])
 
   if (error) {
     return (
@@ -56,18 +23,10 @@ export function PlanetsTable() {
     )
   }
 
-  if (loading && planets.length === 0) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <p className="text-muted-foreground">Cargando planetas...</p>
-      </div>
-    )
-  }
-
   const totalPopulation = getTotalPopulation(planets)
+  const isLoading = loading || loadingMore
 
   const handleLoadMore = () => {
-    setShowLoadMoreButton(false)
     loadMore()
   }
 
@@ -83,13 +42,13 @@ export function PlanetsTable() {
           }}
           renderFooter={() => (
             <>
-              {hasMore && showLoadMoreButton && (
+              {hasMore && (
                 <Button
                   onClick={handleLoadMore}
-                  disabled={loadingMore}
+                  disabled={isLoading}
                   className="h-9 gap-2 bg-white border border-[#D0D8E9] hover:bg-gray-50 rounded-full px-4 py-2 shadow-[0_1px_2px_0_rgba(34,40,58,0.05)]"
                 >
-                  <RotateCw  className={`h-4 w-4 text-black ${loadingMore ? 'animate-spin' : ''}`} />
+                  <RotateCw  className={`h-4 w-4 text-black ${isLoading ? 'animate-spin' : ''}`} />
                   <span className="rotate-cw-label">Cargar más</span>
                 </Button>
               )}
@@ -98,11 +57,13 @@ export function PlanetsTable() {
         />
       </div>
       
-      <div className="flex-shrink-0 flex items-center justify-end w-full pb-4 pr-4">
-        <div className="text-sm text-muted-foreground">
-        POBLACIÓN ACTUAL DE LOS PLANETAS: <span className="font-semibold">{totalPopulation}</span>
+      {!loading && (
+        <div className="flex-shrink-0 flex items-center justify-end w-full pb-4 pr-4">
+          <div className="text-sm text-muted-foreground">
+          POBLACIÓN ACTUAL DE LOS PLANETAS: <span className="font-semibold">{totalPopulation}</span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
