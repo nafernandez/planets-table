@@ -33,7 +33,7 @@ export const columns: ColumnDef<Planet>[] = [
             checked={isAllSelected ? true : isSomeSelected ? "indeterminate" : false}
             onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
             aria-label="Seleccionar todo"
-            className="data-[state=checked]:bg-gray-100 data-[state=checked]:border-gray-200 data-[state=checked]:text-gray-700 data-[state=indeterminate]:bg-gray-100 data-[state=indeterminate]:border-gray-200 data-[state=indeterminate]:text-gray-700"
+            className="data-[state=checked]:bg-[#873aff] data-[state=checked]:border-[#873aff] data-[state=checked]:text-white data-[state=indeterminate]:bg-[#873aff] data-[state=indeterminate]:border-[#873aff] data-[state=indeterminate]:text-white"
           />
         </div>
       )
@@ -44,7 +44,7 @@ export const columns: ColumnDef<Planet>[] = [
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Seleccionar fila"
-          className="data-[state=checked]:bg-gray-100 data-[state=checked]:border-gray-200 data-[state=checked]:text-gray-700"
+          className="data-[state=checked]:bg-[#873aff] data-[state=checked]:border-[#873aff] data-[state=checked]:text-white"
         />
       </div>
     ),
