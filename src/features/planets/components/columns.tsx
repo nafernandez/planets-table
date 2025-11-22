@@ -53,7 +53,7 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "name",
-    header: () => <div className="text-left">Nombre</div>,
+    header: () => <div className="text-left ">Nombre</div>,
     cell: ({ row }) => (
       <div className="font-medium text-left">{row.getValue("name")}</div>
     ),
