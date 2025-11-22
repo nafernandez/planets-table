@@ -10,7 +10,7 @@ function App() {
           Planetas y cuerpos celestes
         </h1>
       </div>
-      <div className="flex-1 overflow-hidden pb-6">
+      <div className="flex-1 overflow-hidden">
         <PlanetsTable />
       </div>
     </div>
