@@ -1,8 +1,9 @@
 # Planets Table SWAPI
 
-- Cambio periodo de rotacion y orbitacion a dias y horas porque el valor aparece en horas.
+- Cambio periodo de rotacion y orbitacion a dias y horas porque el valor aparece en horas. Ademas los exponentes visualizados como exponent en vez de numero.
 - Puse chip con +numero para mostrar todos los terrenos de cada planeta/planetoide.
 - Priorice el requerimiento por sobre el diseño.
+- Puse el scroll dentro de la tabla.
 
 
 Cambios considerables a cambiar:
