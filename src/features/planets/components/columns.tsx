@@ -124,18 +124,19 @@ const createSelectColumn = (): ColumnDef<Planet> => ({
     const isSomeSelected = table.getIsSomeRowsSelected()
     
     return (
-      <div className="pl-4">
+      <div className="pl-4 flex items-center h-full">
         <Checkbox
           checked={isAllSelected || (isSomeSelected && "indeterminate")}
           onCheckedChange={(value) => table.toggleAllRowsSelected(!!value)}
           aria-label="Seleccionar todo"
+          
           className={`${STYLES.checkbox.checked} ${STYLES.checkbox.indeterminate}`}
         />
       </div>
     )
   },
   cell: ({ row }) => (
-    <div className="pl-4">
+    <div className="pl-4 flex items-center h-full">
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
