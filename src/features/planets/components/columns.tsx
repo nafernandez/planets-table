@@ -3,7 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/shared/ui/badge"
 import { Checkbox } from "@/shared/ui/checkbox"
-import type { Planet } from "../types"
+import type { Planet } from "../index"
 import {
   formatGravity,
   formatDiameter,

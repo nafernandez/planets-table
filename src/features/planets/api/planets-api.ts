@@ -1,4 +1,4 @@
-import type { PlanetsResponse } from '../types';
+import type { PlanetsResponse } from '../index';
 
 const BASE_URL = 'https://swapi.py4e.com/api/planets';
 

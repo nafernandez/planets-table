@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { fetchPlanets } from '../api/planets-api'
-import type { Planet, PlanetsResponse } from '../types'
+import type { Planet, PlanetsResponse } from '../index'
 
 export function usePlanets() {
   const [planets, setPlanets] = useState<Planet[]>([])

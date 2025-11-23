@@ -1,4 +1,4 @@
-import type { Planet } from '../types'
+import type { Planet } from '../index'
 
 export function formatGravity(gravity: string): string {
   if (gravity === 'unknown' || gravity === 'N/A' || gravity === 'n/a' || !gravity) return '-'

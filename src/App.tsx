@@ -1,4 +1,4 @@
-import { PlanetsTable } from './features/planets'
+import { PlanetsTable } from './features/planets/index'
 
 function App() {
   return (
