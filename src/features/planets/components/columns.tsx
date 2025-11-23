@@ -1,5 +1,3 @@
-"use client"
-
 import type { ColumnDef } from "@tanstack/react-table"
 import type { Table } from "@tanstack/react-table"
 import { Badge } from "@/shared/ui/badge"

@@ -1,5 +1,3 @@
-"use client"
-
 import { DataTable } from '@/shared/ui/data-table'
 import { Button } from '@/shared/ui/button'
 import { RotateCw } from 'lucide-react'
