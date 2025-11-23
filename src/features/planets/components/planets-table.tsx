@@ -6,11 +6,9 @@ import { RotateCw } from 'lucide-react'
 import { columns } from './columns'
 import { usePlanets } from '../hooks/use-planets'
 import { getTotalPopulation } from '../lib/formatters'
-import { useRef } from 'react'
 
 export function PlanetsTable() {
   const { planets, loading, loadingMore, error, hasMore, loadMore } = usePlanets()
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   if (error) {
     return (
@@ -36,17 +34,13 @@ export function PlanetsTable() {
         <DataTable 
           columns={columns} 
           data={planets}
-          enablePagination={false}
-          onScrollContainerRef={(ref) => {
-            scrollContainerRef.current = ref
-          }}
           renderFooter={() => (
             <>
               {hasMore && (
                 <Button
                   onClick={handleLoadMore}
                   disabled={isLoading}
-                  className="h-9 gap-2 bg-white border border-[#D0D8E9] hover:bg-gray-50 rounded-full px-4 py-2 shadow-[0_1px_2px_0_rgba(34,40,58,0.05)]"
+                  className="h-9 gap-2 bg-white border border-[#D0D8E9] hover:bg-[#ECF0F6] rounded-full px-4 py-2 shadow-[0_1px_2px_0_rgba(34,40,58,0.05)]"
                 >
                   <RotateCw  className={`h-4 w-4 text-black ${isLoading ? 'animate-spin' : ''}`} />
                   <span className="rotate-cw-label">Cargar más</span>

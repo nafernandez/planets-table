@@ -6,8 +6,8 @@ export function formatGravity(gravity: string): string {
   const match = gravity.match(/(\d+\.?\d*)/)
   if (match) {
     const value = parseFloat(match[1])
-    // Aproximación: 1 standard = 9.8 m/s²
-    const gravityInMs2 = value * 9.8
+
+    const gravityInMs2 = value * 9.81
     return `${gravityInMs2.toFixed(2)} m/s²`
   }
   
@@ -24,7 +24,7 @@ export function formatDiameter(diameter: string): string {
   return `${num.toLocaleString('en-US')} km`
 }
 
-export function formatPeriod(period: string): string {
+export function formatRotationPeriod(period: string): string {
   if (period === 'unknown' || !period) return '-'
   
   const hours = parseFloat(period)
@@ -41,6 +41,24 @@ export function formatPeriod(period: string): string {
   } else {
     return `${days} d ${remainingHours} hs`
   }
+}
+
+export function formatOrbitalPeriod(period: string): string {
+  if (period === 'unknown' || !period) return '-'
+  
+  const days = parseFloat(period)
+  if (isNaN(days)) return period
+  if (days === 0) return '-'
+  
+  if (days < 1) {
+    return `${days.toFixed(2)} d`
+  }
+  
+  if (days % 1 === 0) {
+    return `${Math.floor(days).toLocaleString('en-US')} d`
+  }
+  
+  return `${days.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} d`
 }
 
 export function formatPopulation(population: string): string {

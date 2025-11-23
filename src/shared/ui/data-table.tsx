@@ -4,14 +4,10 @@ import * as React from "react"
 import {
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table"
 import type {
   ColumnDef,
-  ColumnFiltersState,
-  VisibilityState,
 } from "@tanstack/react-table"
 
 import {
@@ -26,58 +22,30 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  enablePagination?: boolean
-  pageSize?: number
   renderFooter?: () => React.ReactNode
-  onScrollContainerRef?: (ref: HTMLDivElement | null) => void
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  enablePagination = true,
-  pageSize = 10,
   renderFooter,
-  onScrollContainerRef,
 }: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState<Record<string, boolean>>({})
-  const scrollContainerRef = React.useRef<HTMLDivElement>(null)
   const prevDataLengthRef = React.useRef<number>(0)
-
-  React.useEffect(() => {
-    if (onScrollContainerRef) {
-      onScrollContainerRef(scrollContainerRef.current)
-    }
-  }, [onScrollContainerRef])
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: enablePagination ? getPaginationRowModel() : undefined,
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     enableRowSelection: true,
-    enableColumnResizing: false,
-    columnResizeMode: 'onChange',
     getRowId: (row, index) => {
       if (row && typeof row === 'object' && 'url' in row) {
         return (row as { url: string }).url
       }
       return String(index)
     },
-    initialState: {
-      pagination: {
-        pageSize,
-      },
-    },
     state: {
-      columnFilters,
-      columnVisibility,
       rowSelection,
     },
   })
@@ -106,7 +74,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="h-full flex flex-col">
-      <div ref={scrollContainerRef} className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto">
         <Table>
           <TableHeader key={`header-${Object.keys(rowSelection).length}-${data.length}`}>
             {table.getHeaderGroups().map((headerGroup) => (

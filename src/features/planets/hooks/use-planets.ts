@@ -1,46 +1,62 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { fetchPlanets } from '../api/planets-api'
-import type { Planet } from '../types'
+import type { Planet, PlanetsResponse } from '../types'
 
 export function usePlanets() {
   const [planets, setPlanets] = useState<Planet[]>([])
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [nextPage, setNextPage] = useState<number | null>(2)
+  const [nextPage, setNextPage] = useState<number | null>()
   const [hasMore, setHasMore] = useState(true)
+
+  const handleError = useCallback((err: unknown) => {
+    setError(err instanceof Error ? err.message : 'Error desconocido')
+  }, [])
+
+  const updatePaginationState = useCallback((data: PlanetsResponse, currentPage: number) => {
+    setNextPage(data.next ? currentPage + 1 : null)
+    setHasMore(data.next !== null)
+  }, [])
+
+  const loadPlanets = useCallback(async (page: number = 1, append: boolean = false) => {
+    try {
+      setError(null)
+      const data = await fetchPlanets(page)
+      
+      if (append) {
+        setPlanets(prev => [...prev, ...data.results])
+      } else {
+        setPlanets(data.results)
+      }
+      
+      updatePaginationState(data, page)
+      return data
+    } catch (err) {
+      handleError(err)
+      throw err
+    }
+  }, [handleError, updatePaginationState])
 
   useEffect(() => {
     async function loadInitialPlanets() {
       try {
         setLoading(true)
-        setError(null)
-        const data = await fetchPlanets(1)
-        setPlanets(data.results)
-        setNextPage(data.next ? 2 : null)
-        setHasMore(data.next !== null)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error desconocido')
+        await loadPlanets()
       } finally {
         setLoading(false)
       }
     }
 
     loadInitialPlanets()
-  }, [])
+  }, [loadPlanets])
 
   const loadMore = async () => {
     if (!nextPage || loadingMore) return
 
     try {
       setLoadingMore(true)
-      setError(null)
-      const data = await fetchPlanets(nextPage)
-      setPlanets(prev => [...prev, ...data.results])
-      setNextPage(data.next ? nextPage + 1 : null)
-      setHasMore(data.next !== null)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error desconocido')
+      await loadPlanets(nextPage, true)
     } finally {
       setLoadingMore(false)
     }

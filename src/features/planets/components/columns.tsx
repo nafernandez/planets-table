@@ -7,19 +7,13 @@ import type { Planet } from "../types"
 import {
   formatGravity,
   formatDiameter,
-  formatPeriod,
+  formatRotationPeriod,
+  formatOrbitalPeriod,
   formatPopulation,
   formatSurfaceWater,
 } from "../lib/formatters"
 import { translateClimate, translateTerrain } from "../lib/translations"
 
-const getClimateColor = () => {
-  return 'bg-[#F8F9FB] text[#22283A] border-[#D0D8E9]'
-}
-
-const getTerrainColor = () => {
-  return 'bg-[#F3EBFF] text-[#873AFF] border-[#FFFFFF00]'
-}
 
 export const columns: ColumnDef<Planet>[] = [
   {
@@ -60,7 +54,7 @@ export const columns: ColumnDef<Planet>[] = [
     accessorKey: "name",
     size: 150,
     minSize: 120,
-    header: () => <div className="text-left ">Nombre</div>,
+    header: () => <div className="text-left">Nombre</div>,
     cell: ({ row }) => (
       <div className="text-left text-[#22283A]">{row.getValue("name")}</div>
     ),
@@ -73,29 +67,43 @@ export const columns: ColumnDef<Planet>[] = [
     cell: ({ row }) => {
       const climate = row.getValue("climate") as string
       const isUnknown = climate === 'unknown' || !climate
-      const firstClimate = isUnknown
-        ? '-'
-        : climate.split(',').map(c => c.trim())[0]
-      const displayClimate = isUnknown ? '-' : translateClimate(firstClimate)
+      
+      if (isUnknown) {
+        return (
+          <div className="text-left">
+            <span className="text-[#697086]">-</span>
+          </div>
+        )
+      }
+      
+      const climates = climate.split(',').map(c => c.trim()).filter(c => c)
+      const displayClimate = translateClimate(climates[0])
+      const extraCount = climates.length - 1
+      const remainingClimates = climates.slice(1).map(c => translateClimate(c))
       
       return (
-        <div className="text-left">
-          {isUnknown ? (
-            <span className="text-[#697086]">{displayClimate}</span>
-          ) : (
-            <Badge variant="outline" className={getClimateColor()}>
-              {displayClimate}
-            </Badge>
+        <div className="flex items-center gap-1 text-left">
+          <Badge variant="default">
+            {displayClimate}
+          </Badge>
+          {extraCount > 0 && (
+            <div className="relative group">
+              <Badge variant="default">
+                +{extraCount}
+              </Badge>
+              <div className="absolute left-0 -top-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
+                <div className="bg-white border-r border-[#D0D8E9] rounded-md p-2 flex flex-wrap gap-1 min-w-max max-w-xs">
+                  {remainingClimates.map((c, index) => (
+                    <Badge key={index} variant="default">
+                      {c}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
           )}
         </div>
       )
-    },
-    filterFn: (row, id, value) => {
-      const climate = row.getValue(id) as string
-      const translatedClimate = translateClimate(climate)
-      const searchValue = value.toLowerCase()
-      return climate.toLowerCase().includes(searchValue) || 
-             translatedClimate.toLowerCase().includes(searchValue)
     },
   },
   {
@@ -122,18 +130,18 @@ export const columns: ColumnDef<Planet>[] = [
       
       return (
         <div className="flex items-center gap-1 text-left">
-          <Badge variant="outline" className={getTerrainColor()}>
+          <Badge variant="terrain">
             {displayTerrain}
           </Badge>
           {extraCount > 0 && (
             <div className="relative group">
-              <Badge variant="outline" className={getTerrainColor()}>
+              <Badge variant="terrain">
                 +{extraCount}
               </Badge>
               <div className="absolute left-0 -top-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                <div className="bg-white border border-purple-200 rounded-md shadow-lg p-2 flex flex-wrap gap-1 min-w-max max-w-xs">
+                <div className="bg-white border-r border-purple-200 rounded-md p-2 flex flex-wrap gap-1 min-w-max max-w-xs">
                   {remainingTerrains.map((t, index) => (
-                    <Badge key={index} variant="outline" className={getTerrainColor()}>
+                    <Badge key={index} variant="terrain">
                       {t}
                     </Badge>
                   ))}
@@ -143,14 +151,6 @@ export const columns: ColumnDef<Planet>[] = [
           )}
         </div>
       )
-    },
-    filterFn: (row, id, value) => {
-      const terrain = row.getValue(id) as string
-      const terrains = terrain.split(',').map(t => t.trim()).filter(t => t)
-      const translatedTerrains = terrains.map(t => translateTerrain(t))
-      const searchValue = value.toLowerCase()
-      return terrain.toLowerCase().includes(searchValue) ||
-             translatedTerrains.some(t => t.toLowerCase().includes(searchValue))
     },
   },
   {
@@ -183,7 +183,7 @@ export const columns: ColumnDef<Planet>[] = [
     header: () => <div className="text-right">Período de rotación</div>,
     cell: ({ row }) => {
       const rotationPeriod = row.original.rotation_period
-      return <div className="text-right text-[#697086]">{formatPeriod(rotationPeriod)}</div>
+      return <div className="text-right text-[#697086]">{formatRotationPeriod(rotationPeriod)}</div>
     },
   },
   {
@@ -194,7 +194,7 @@ export const columns: ColumnDef<Planet>[] = [
     header: () => <div className="text-right">Período de órbita</div>,
     cell: ({ row }) => {
       const orbitalPeriod = row.original.orbital_period
-      return <div className="text-right text-[#697086]">{formatPeriod(orbitalPeriod)}</div>
+      return <div className="text-right text-[#697086]">{formatOrbitalPeriod(orbitalPeriod)}</div>
     },
   },
   {
@@ -219,7 +219,7 @@ export const columns: ColumnDef<Planet>[] = [
           {formatted === 'No' ? (
             <Badge variant="destructive">{formatted}</Badge>
           ) : (
-            <Badge variant="outline" className="bg-[#F8F9FB] text-gray-700 border-gray-200">
+            <Badge variant="default">
               {formatted}
             </Badge>
           )}

@@ -1,8 +1,3 @@
-/**
- * Traducciones directas de valores en inglés de la API a español
- * Solo para climate y terrain
- */
-
 const climateTranslations: Record<string, string> = {
   'temperate': 'Templado',
   'arid': 'Árido',
