@@ -24,7 +24,7 @@ Aplicación web desarrollada en React que muestra una tabla interactiva de plane
 ## Requisitos Previos
 
 - Node.js (versión 18 o superior)
-- npm o yarn
+- npm
 
 ## Instalación
 
