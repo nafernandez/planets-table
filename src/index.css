@@ -81,6 +81,12 @@
   font-size: 12px;
 }
 
+.title-planets {
+  font-family: 'Los Andes Lota Grotesque Regular', sans-serif;
+  font-weight: 600;
+  color: #22283A;
+}
+
 
 *::-webkit-scrollbar {
   width: 8px;
