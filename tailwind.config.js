@@ -14,11 +14,8 @@ const config = {
     },
     extend: {
       fontFamily: {
-        'lota': ['Los Andes Lota Grotesque', 'sans-serif'],
-        'lota-regular': ['Los Andes Lota Grotesque Regular', 'sans-serif'],
-        'lota-alt1': ['Los Andes Lota Grotesque Alt 1 Bold', 'sans-serif'],
-        'lota-alt2': ['Los Andes Lota Grotesque Alt 2', 'sans-serif'],
-        'lota-alt3': ['Los Andes Lota Grotesque Alt 3', 'sans-serif'],
+        'lota-regular': ['Los Andes  Lota Grotesque Regular', 'sans-serif'],
+        'lota-alt1-thin': ['Los Andes  Lota Grotesque Alt 1 Thin', 'sans-serif'],
       },
       colors: {
         border: 'hsl(var(--border))',

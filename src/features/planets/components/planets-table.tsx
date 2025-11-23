@@ -43,7 +43,7 @@ export function PlanetsTable() {
                   className="h-9 gap-2 bg-white border border-[#D0D8E9] hover:bg-[#ECF0F6] rounded-full px-4 py-2 shadow-[0_1px_2px_0_rgba(34,40,58,0.05)]"
                 >
                   <RotateCw  className={`h-4 w-4 text-black ${isLoading ? 'animate-spin' : ''}`} />
-                  <span className="rotate-cw-label">Cargar más</span>
+                  <span className="lota-alt1-thin text-[#697086]">Cargar más</span>
                 </Button>
               )}
             </>
