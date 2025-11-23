@@ -11,6 +11,7 @@ import {
   formatPopulation,
   formatSurfaceWater,
 } from "../lib/formatters"
+import { translateClimate, translateTerrain } from "../lib/translations"
 
 const getClimateColor = () => {
   return 'bg-[#F8F9FB] text[#22283A] border-[#D0D8E9]'
@@ -24,17 +25,20 @@ export const columns: ColumnDef<Planet>[] = [
   {
     id: "select",
     size: 50,
+    minSize: 50,
     header: ({ table }) => {
-      const isAllSelected = table.getIsAllPageRowsSelected()
-      const isSomeSelected = table.getIsSomePageRowsSelected()
+      const isAllSelected = table.getIsAllRowsSelected()
+      const isSomeSelected = table.getIsSomeRowsSelected()
       
       return (
         <div className="pl-4">
           <Checkbox
-            checked={isAllSelected ? true : isSomeSelected ? "indeterminate" : false}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            checked={
+              isAllSelected || (isSomeSelected && "indeterminate")
+            }
+            onCheckedChange={(value) => table.toggleAllRowsSelected(!!value)}
             aria-label="Seleccionar todo"
-            className="data-[state=checked]:bg-[#873aff] data-[state=checked]:border-[#873aff] data-[state=checked]:text-white data-[state=indeterminate]:bg-[#873aff] data-[state=indeterminate]:border-[#873aff] data-[state=indeterminate]:text-white"
+            className="data-[state=checked]:bg-[#873aff] data-[state=checked]:border-[#873aff] data-[state=checked]:text-white data-[state=indeterminate]:bg-[#E8D5FF] data-[state=indeterminate]:border-[#873aff] data-[state=indeterminate]:text-[#873aff]"
           />
         </div>
       )
@@ -54,6 +58,8 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "name",
+    size: 150,
+    minSize: 120,
     header: () => <div className="text-left ">Nombre</div>,
     cell: ({ row }) => (
       <div className="text-left text-[#22283A]">{row.getValue("name")}</div>
@@ -61,41 +67,58 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "climate",
+    size: 140,
+    minSize: 120,
     header: () => <div className="text-left">Clima</div>,
     cell: ({ row }) => {
       const climate = row.getValue("climate") as string
-      const displayClimate = climate === 'unknown' || !climate
-        ? 'Desconocido'
+      const isUnknown = climate === 'unknown' || !climate
+      const firstClimate = isUnknown
+        ? '-'
         : climate.split(',').map(c => c.trim())[0]
+      const displayClimate = isUnknown ? '-' : translateClimate(firstClimate)
       
       return (
         <div className="text-left">
-          <Badge variant="outline" className={getClimateColor()}>
-            {displayClimate}
-          </Badge>
+          {isUnknown ? (
+            <span className="text-[#697086]">{displayClimate}</span>
+          ) : (
+            <Badge variant="outline" className={getClimateColor()}>
+              {displayClimate}
+            </Badge>
+          )}
         </div>
       )
     },
     filterFn: (row, id, value) => {
       const climate = row.getValue(id) as string
-      return climate.toLowerCase().includes(value.toLowerCase())
+      const translatedClimate = translateClimate(climate)
+      const searchValue = value.toLowerCase()
+      return climate.toLowerCase().includes(searchValue) || 
+             translatedClimate.toLowerCase().includes(searchValue)
     },
   },
   {
     accessorKey: "terrain",
     size: 160,
+    minSize: 140,
     header: () => <div className="text-left">Terreno</div>,
     cell: ({ row }) => {
       const terrain = row.getValue("terrain") as string
       const isUnknown = terrain === 'unknown' || !terrain
       
-      const terrains = isUnknown 
-        ? ['Desconocido']
-        : terrain.split(',').map(t => t.trim()).filter(t => t)
+      if (isUnknown) {
+        return (
+          <div className="text-left">
+            <span className="text-[#697086]">-</span>
+          </div>
+        )
+      }
       
-      const displayTerrain = terrains[0]
+      const terrains = terrain.split(',').map(t => t.trim()).filter(t => t)
+      const displayTerrain = translateTerrain(terrains[0])
       const extraCount = terrains.length - 1
-      const remainingTerrains = terrains.slice(1)
+      const remainingTerrains = terrains.slice(1).map(t => translateTerrain(t))
       
       return (
         <div className="flex items-center gap-1 text-left">
@@ -123,11 +146,17 @@ export const columns: ColumnDef<Planet>[] = [
     },
     filterFn: (row, id, value) => {
       const terrain = row.getValue(id) as string
-      return terrain.toLowerCase().includes(value.toLowerCase())
+      const terrains = terrain.split(',').map(t => t.trim()).filter(t => t)
+      const translatedTerrains = terrains.map(t => translateTerrain(t))
+      const searchValue = value.toLowerCase()
+      return terrain.toLowerCase().includes(searchValue) ||
+             translatedTerrains.some(t => t.toLowerCase().includes(searchValue))
     },
   },
   {
     accessorKey: "gravity",
+    size: 120,
+    minSize: 100,
     meta: { rightAlign: true },
     header: () => <div className="text-right">Gravedad</div>,
     cell: ({ row }) => {
@@ -137,6 +166,8 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "diameter",
+    size: 140,
+    minSize: 120,
     meta: { rightAlign: true },
     header: () => <div className="text-right">Diámetro (km)</div>,
     cell: ({ row }) => {
@@ -146,6 +177,8 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "rotation_period",
+    size: 160,
+    minSize: 140,
     meta: { rightAlign: true },
     header: () => <div className="text-right">Período de rotación</div>,
     cell: ({ row }) => {
@@ -155,6 +188,8 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "orbital_period",
+    size: 160,
+    minSize: 140,
     meta: { rightAlign: true },
     header: () => <div className="text-right">Período de órbita</div>,
     cell: ({ row }) => {
@@ -164,11 +199,20 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "surface_water",
-    size: 110,
+    size: 150,
+    minSize: 130,
     header: () => <div className="text-left">Agua superficial</div>,
     cell: ({ row }) => {
       const surfaceWater = row.original.surface_water
       const formatted = formatSurfaceWater(surfaceWater)
+      
+      if (formatted === '-') {
+        return (
+          <div className="text-left">
+            <span className="text-[#697086]">-</span>
+          </div>
+        )
+      }
       
       return (
         <div className="text-left">
@@ -185,6 +229,8 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "population",
+    size: 140,
+    minSize: 120,
     meta: { rightAlign: true },
     header: () => <div className="text-right">Población</div>,
     cell: ({ row }) => {
@@ -194,6 +240,8 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "residents",
+    size: 120,
+    minSize: 100,
     meta: { rightAlign: true },
     header: () => <div className="text-right">Residentes</div>,
     cell: ({ row }) => {
@@ -203,6 +251,8 @@ export const columns: ColumnDef<Planet>[] = [
   },
   {
     accessorKey: "films",
+    size: 120,
+    minSize: 100,
     meta: { rightAlign: true },
     header: () => <div className="text-right">Películas</div>,
     cell: ({ row }) => {
