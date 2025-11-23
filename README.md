@@ -2,6 +2,9 @@
 
 Aplicación web desarrollada en React que muestra una tabla interactiva de planetas y cuerpos celestes de Star Wars, consumiendo datos de la [SWAPI (Star Wars API)](https://swapi.dev/).
 
+Video ilustrativo sobre la tabla en [VIMEO](https://vimeo.com/1139860643?share=copy&fl=sv&fe=ci).
+Proyecto deployado en [VERCEL](https://planets-table.vercel.app/)
+
 ## Características
 
 - **Tabla interactiva** con datos de planetas de Star Wars
