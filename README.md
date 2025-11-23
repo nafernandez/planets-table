@@ -88,18 +88,17 @@ src/
 
 ### Formateo de Datos
 
-- **Períodos**: Los valores de rotación están expresados en horas en la API. En Figma se muestran como días/horas/minutos, pero la API no contempla minutos, por lo que lo adapté a días/horas.
-Los valores de orbitación están en días y no figuran en Figma, así que prioricé el requerimiento enviado por mail y lo dejé solo en días.
-- **Valores faltantes**: Se representan con guión (-) para mantener la consistencia visual.
-- **Agregado de exponente a la gravedad**: El exponencial se muestra como numero entero, lo modifico a exponente.
+- Los valores de `orbital_period` se expresan en días y no figuran en Figma, así que prioricé el requerimiento enviado por mail y lo dejé solo en días.
+- Los valores de `rotation_period` están expresados en horas en la API y en Figma se muestran como días/horas/minutos, pero la API no contempla minutos, por lo que lo adapté a días/horas.
+- Los valores nulos o vacíos se representan con guión (-) para mantener la consistencia visual.
+- En el diseño de Figma, se muestra los valores de gravedad como m/s2 y decidí modificarlo a m/s².
 
 ### Visualización
 
-- **Terrenos y climas**: Se muestran como chips con un indicador "+N" cuando hay múltiples terrenos o climas.
-- **Scroll interno**: El scroll está dentro de la tabla para mejorar la experiencia de usuario con grandes cantidades de datos.
-- **Población total**: Se muestra en el footer de la tabla, calculada dinámicamente según los planetas cargados.Priorice el requerimiento por sobre el diseño ya que tenia que agregar el label:
-POBLACIÓN ACTUAL DE LOS PLANETAS: <suma>
-- **Evasión de formato de población**: Por desconocimiento del formato del numero de población, se evito el '.
+- Tanto la columna `climate` como la columna `terrain`, se muestran como chips con un indicador "+N" cuando hay múltiples terrenos o climas.
+- El scroll está dentro de la tabla para mejorar la experiencia de usuario con grandes cantidades de datos.
+- La población total se muestra en el footer de la tabla, calculada dinámicamente según los planetas cargados. Prioricé el requerimiento por sobre el diseño. El diseño decía mostrar solo la suma de población y el requerimiento agregaba el label POBLACIÓN ACTUAL DE LOS PLANETAS: `suma`. Mismo tambien se mostraba debajo de la columna de población y lo agregué a la derecha por completo.
+- Por desconocimiento del formato del numero de población, se evito el ' en el campo `population`.
 
 ## Posibles Mejoras Futuras
 
@@ -107,6 +106,3 @@ POBLACIÓN ACTUAL DE LOS PLANETAS: <suma>
 - Poner magnitudes arriba en los headers en vez de cada celda.
 - Columna checkbox es irrelevante, considerar quitarla.
 - Cambio de titulo para que coincida con el contenido de SWAPI, ya que son planetas y planetoides.
-- La aplicación consume datos de la API pública de Star Wars: `https://swapi.py4e.com/api/planets`
-- Los datos se cargan de forma paginada, mostrando 10 planetas por página
-- El cálculo de población total solo incluye los planetas actualmente cargados en la tabla
