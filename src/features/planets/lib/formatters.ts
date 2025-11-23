@@ -1,7 +1,7 @@
 import type { Planet } from '../types'
 
 export function formatGravity(gravity: string): string {
-  if (gravity === 'unknown' || !gravity) return 'Desconocido'
+  if (gravity === 'unknown' || gravity === 'N/A' || gravity === 'n/a' || !gravity) return '-'
   
   const match = gravity.match(/(\d+\.?\d*)/)
   if (match) {
@@ -15,19 +15,21 @@ export function formatGravity(gravity: string): string {
 }
 
 export function formatDiameter(diameter: string): string {
-  if (diameter === 'unknown' || !diameter) return 'Desconocido'
+  if (diameter === 'unknown' || !diameter) return '-'
   
   const num = parseInt(diameter, 10)
   if (isNaN(num)) return diameter
+  if (num === 0) return '-'
   
-  return `${num.toLocaleString('es-ES')} km`
+  return `${num.toLocaleString('en-US')} km`
 }
 
 export function formatPeriod(period: string): string {
-  if (period === 'unknown' || !period) return 'Desconocido'
+  if (period === 'unknown' || !period) return '-'
   
   const hours = parseFloat(period)
   if (isNaN(hours)) return period
+  if (hours === 0) return '-'
   
   const days = Math.floor(hours / 24)
   const remainingHours = Math.floor(hours % 24)
@@ -42,19 +44,19 @@ export function formatPeriod(period: string): string {
 }
 
 export function formatPopulation(population: string): string {
-  if (population === 'unknown' || !population) return '0'
+  if (population === 'unknown' || !population) return '-'
   
   const num = parseInt(population, 10)
-  if (isNaN(num)) return '0'
+  if (isNaN(num)) return '-'
   
-  return num.toLocaleString('es-ES')
+  return num.toLocaleString('en-US')
 }
 
-export function formatSurfaceWater(surfaceWater: string): 'Sí' | 'No' {
-  if (surfaceWater === 'unknown' || !surfaceWater) return 'No'
+export function formatSurfaceWater(surfaceWater: string): 'Sí' | 'No' | '-' {
+  if (surfaceWater === 'unknown' || !surfaceWater) return '-'
   
   const percentage = parseFloat(surfaceWater)
-  if (isNaN(percentage)) return 'No'
+  if (isNaN(percentage)) return '-'
   
   return percentage > 0 ? 'Sí' : 'No'
 }
@@ -66,6 +68,6 @@ export function getTotalPopulation(planets: Planet[]): string {
     return sum + (isNaN(num) ? 0 : num)
   }, 0)
   
-  return total.toLocaleString('es-ES')
+  return total.toLocaleString('en-US')
 }
 
