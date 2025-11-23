@@ -232,9 +232,6 @@ const createSurfaceWaterColumn = ({ size, minSize }: ColumnSize): ColumnDef<Plan
   cell: ({ row }) => renderSurfaceWaterCell(row.original.surface_water),
 })
 
-// ============================================================================
-// Definición de columnas
-// ============================================================================
 export const columns: ColumnDef<Planet>[] = [
   createSelectColumn(),
   
