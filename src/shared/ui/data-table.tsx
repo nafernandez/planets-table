@@ -42,8 +42,9 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+  const [rowSelection, setRowSelection] = React.useState<Record<string, boolean>>({})
   const scrollContainerRef = React.useRef<HTMLDivElement>(null)
+  const prevDataLengthRef = React.useRef<number>(0)
 
   React.useEffect(() => {
     if (onScrollContainerRef) {
@@ -60,8 +61,15 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    enableRowSelection: true,
     enableColumnResizing: false,
     columnResizeMode: 'onChange',
+    getRowId: (row, index) => {
+      if (row && typeof row === 'object' && 'url' in row) {
+        return (row as { url: string }).url
+      }
+      return String(index)
+    },
     initialState: {
       pagination: {
         pageSize,
@@ -73,22 +81,49 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   })
+  React.useEffect(() => {
+    const currentDataLength = data.length
+    const prevDataLength = prevDataLengthRef.current
+    if (currentDataLength > prevDataLength && prevDataLength > 0) {
+      const rows = table.getRowModel().rows
+      const previousRows = rows.slice(0, prevDataLength)
+      const allPreviousSelected = previousRows.length > 0 && previousRows.every((row) => rowSelection[row.id] === true)
+
+      if (allPreviousSelected) {
+        const newSelection: Record<string, boolean> = { ...rowSelection }
+        const newRows = rows.slice(prevDataLength)
+        
+        newRows.forEach((row) => {
+          newSelection[row.id] = true
+        })
+        
+        setRowSelection(newSelection)
+      }
+    }
+
+    prevDataLengthRef.current = currentDataLength
+  }, [data])
 
   return (
     <div className="h-full flex flex-col">
       <div ref={scrollContainerRef} className="flex-1 overflow-auto">
         <Table>
-          <TableHeader>
+          <TableHeader key={`header-${Object.keys(rowSelection).length}-${data.length}`}>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-white">
                 {headerGroup.headers.map((header) => {
                   const isRightAligned = (header.column.columnDef.meta as { rightAlign?: boolean })?.rightAlign
                   const columnSize = header.column.getSize()
+                  const minSize = (header.column.columnDef as { minSize?: number }).minSize || columnSize || 100
                   return (
                     <TableHead 
                       key={header.id} 
                       className={isRightAligned ? "bg-white !pr-2" : "bg-white"}
-                      style={columnSize ? { width: `${columnSize}px`, maxWidth: `${columnSize}px` } : undefined}
+                      style={columnSize ? { 
+                        width: `${columnSize}px`, 
+                        maxWidth: `${columnSize}px`,
+                        minWidth: `${minSize}px`
+                      } : { minWidth: `${minSize}px` }}
                     >
                       {header.isPlaceholder
                         ? null
@@ -112,11 +147,16 @@ export function DataTable<TData, TValue>({
                   {row.getVisibleCells().map((cell) => {
                     const isRightAligned = (cell.column.columnDef.meta as { rightAlign?: boolean })?.rightAlign
                     const columnSize = cell.column.getSize()
+                    const minSize = (cell.column.columnDef as { minSize?: number }).minSize || columnSize || 100
                     return (
                       <TableCell 
                         key={cell.id} 
                         className={isRightAligned ? "!pr-2" : ""}
-                        style={columnSize ? { width: `${columnSize}px`, maxWidth: `${columnSize}px` } : undefined}
+                        style={columnSize ? { 
+                          width: `${columnSize}px`, 
+                          maxWidth: `${columnSize}px`,
+                          minWidth: `${minSize}px`
+                        } : { minWidth: `${minSize}px` }}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
